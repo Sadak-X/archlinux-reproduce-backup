@@ -1,0 +1,31 @@
+# /home/sadak/.local/share/fcitx5/rime/double_pinyin_flypy.custom.yaml
+patch:
+  # 设置双拼不自动扩展到全拼
+  translator/preedit_format: []
+
+  # 语言模型
+  "grammar/language": wanxiang-lts-zh-hans
+  "grammar/collocation_max_length": 5
+  "grammar/collocation_min_length": 2
+  # translator 内加载
+  "translator/contextual_suggestions": true
+  "translator/max_homophones": 7
+  "translator/max_homographs": 7
+
+  # 设置默认英文输入
+  "switches/@0/reset": 1
+  # 设置方案名称为“中文-小鹤双拼”，这样输入法指示器在进行状态显示时只取第一个字时，就会显示“中”
+  "schema/name": "中文-小鹤双拼"
+
+  # 设置拆字模式进入方法为大写U
+  "radical_lookup/prefix": U
+  # 设置拆字模式识别序列正则
+  "recognizer/patterns/radical_lookup": "^U[a-z]+$"
+  # 处理与新的拆字模式进入方法有冲突的unicode输入模式
+  "recognizer/patterns/unicode": "^uU[a-f0-9]+"
+
+  # 设置小键盘回车与字母区回车行为一致
+  "editor/bindings/KP_Enter": commit_raw_input
+
+  # 设置字母区数字上屏，小键盘数字不上屏
+  "engine/processors/@before 0": lua_processor@*kp_num_processor
