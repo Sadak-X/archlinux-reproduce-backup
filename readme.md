@@ -208,6 +208,17 @@ kde 设置主题启动界面选择 spinner 主题，重启即可
 中文输入法采用 fcitx5 + rime +雾凇+万象大模型的方案\
 上面的软件安装完了以后，直接去 kde 设置界面点点点就能搞出来全拼了，记得在经典用户界面中把皮肤调成 kde plasma，然后把两份备份的配置文件放到 rime 配置文件目录下，分词模型文件也放到配置文件目录下，lua 脚本也放到对应的目录下，在状态栏点击重新部署即可。
 
+**注意：** 万象大模型的分词文件`wanxiang-lts-zh-hans.gram`体积过大，不能直接提交Github。需要使用git lfs。
+
+其实可以直接从[万象的 Github 发布页](https://github.com/amzxyz/RIME-LMDG/releases)下载模型，但是为了方便直接 clone 这个仓库就能开始重建，免去跑两趟下载的烦恼，我还是将其加入了这个仓库中。
+
+```bash
+# 使用 git lfs 跟踪大文件更改
+git lfs track "*.gram"
+```
+
+在这之后正常使用 git 同步到Github就可以了
+
 ## discover 应用商店
 
 这个东西一开始不好用，会各种报错，记得把软件源里面自带的 flathub 删除，然后重新添加 flathub 的软件源就可以用了。这个应用商店里面基本都是 flatpak 应用，运行时有沙箱机制，所以有些可能要重新设置权限。
