@@ -15,6 +15,9 @@
   - [休眠](#休眠)
   - [文件搜索](#文件搜索)
   - [图形化git](#图形化git)
+  - [文件共享](#文件共享)
+  - [光盘刻录](#光盘刻录)
+  - [视频播放](#视频播放)
 
 ## 安装snapper
 
@@ -264,3 +267,55 @@ fsearch，装好就用
 ## 图形化git
 
 github-desktop，装好就用
+
+## 文件共享
+
+文件共享使用`samba`作为后端，前端使用 kde 自带的右键菜单中的共享，即可实现 Windows 端和 Linux 端局域网中文件互传。
+
+需要安装`samba`和`kdenetwork-filesharing`两个软件。
+
+samba 的配置文件放到对应目录下即可。
+
+这俩玩意装好并不是开箱即用的，`kdenetwork-filesharing`大概率会甩锅给`samba`说他没有配置好。这个时候跟随下面的步骤。
+
+```bash
+# 建立 usershares 目录，虽然不知道这个目录有什么用，但是如果没有 samba 就不会正常工作，因此咱们给他加上。
+mkdir -p /var/lib/samba/usershares
+groupadd sambashares
+usermod -a -G sambashares sadak
+chown root:sambashares /var/lib/samba/usershares
+chmod 1770 /var/lib/samba/usershares
+
+# 启动 samba 服务
+systemctl restart smb
+systemctl enable smb
+
+smbpasswd -a sadak
+# 输入希望为 samba 用户 sadak 设定的密码
+
+
+
+# 最后把备份的配置文件放到指定路径下就可以了
+
+# 配置文件内容解释
+# usershare path = /var/lib/samba/usershares
+# usershare allow guests = Yes
+# usershare max shares = 10
+# usershare owner only = False
+
+# 第一条是你刚才的路径，第二条是说明如果你是否想让guest访问。第三条是你最多可以共享几个。第四条是设置共享的人是否一定是被共享目录的所有者。第一条是你刚才的路径，第二条是说明如果你是否想让guest访问。第三条是你最多可以共享几个。第四条是设置共享的人是否一定是被共享目录的所有者。
+```
+
+弄好了以后，在你希望共享的文件夹上面右键点击，选择共享，这个时候共享页面上应该没有任何报错，按需要设置即可。
+
+`wsdd`这个软件包声称能解决Windows 端文件管理器中的“网络”界面不显示 Linux 主机的问题，但是我装了，没啥鸟用，还是得用`\\192.168.6.231\Share`这样的方式来访问。
+
+## 光盘刻录
+
+使用 k3b 进行光盘刻录，但是目前遇到的问题是，即使使用k3b推荐的 Linu /Unix+Windows 这样的兼容性光盘文件系统设置，刻录出来的 CD-R 仍然只能被 Linux 读取，Windows 上只能看到光盘有空间占用，但是点开没有任何文件。
+
+目前仅在一台老 Windows 笔记本的自带光驱上进行了测试，需要更多测试以进一步排除问题。
+
+## 视频播放
+
+vlc，默认界面很丑，没有啥好用的，捏着鼻子用得了。
