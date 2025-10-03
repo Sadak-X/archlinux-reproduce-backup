@@ -3,6 +3,7 @@
 - [ThinkPad W540 archlinux 重建备份](#thinkpad-w540-archlinux-重建备份)
   - [安装snapper](#安装snapper)
   - [安装显卡驱动](#安装显卡驱动)
+    - [关闭独显](#关闭独显)
   - [安装软件列表备份](#安装软件列表备份)
   - [中文配置](#中文配置)
     - [系统中文](#系统中文)
@@ -18,6 +19,7 @@
   - [文件共享](#文件共享)
   - [光盘刻录](#光盘刻录)
   - [视频播放](#视频播放)
+  - [省电配置](#省电配置)
 
 ## 安装snapper
 
@@ -55,6 +57,24 @@ nvidia_drm.modeset=1 nvidia_drm.fbdev=1
 sudo mkinitcpio -P  
 reboot
 ```
+
+### 关闭独显
+
+我们使用 envycontrol 来完成这一目标，实测下来非常好用，唯一的缺点就是每次使用的时候需要重建 initramfs，这个需要等待至少一分钟，然后还需要重启，但是我觉得已经很OK了，确实能做到独显和集显的切换，而且不会有什么黑屏等乱七八糟的问题。
+
+```bash
+# 第一条和第三条命令实测下来几乎没有什么不一样，这个机器不支持独显输出
+sudo envycontrol -s nvidia
+sudo envycontrol -s integrated
+sudo envycontrol -s hybrid
+# 使用 glxinfo | grep "OpenGL renderer string" 命令验证
+```
+
+已知存在以下问题：
+
+1. 切换至集成显卡后（integrate），系统设置中“关于此系统”页面无法打开，会导致系统设置崩溃退出；
+
+以上问题不影响正常使用，因此我们直接将其忽略。
 
 ## 安装软件列表备份
 
@@ -312,10 +332,18 @@ smbpasswd -a sadak
 
 ## 光盘刻录
 
-使用 k3b 进行光盘刻录，但是目前遇到的问题是，即使使用k3b推荐的 Linu /Unix+Windows 这样的兼容性光盘文件系统设置，刻录出来的 CD-R 仍然只能被 Linux 读取，Windows 上只能看到光盘有空间占用，但是点开没有任何文件。
+使用`k3b`进行光盘刻录，但是目前遇到的问题是，即使使用k3b推荐的 Linu /Unix+Windows 这样的兼容性光盘文件系统设置，刻录出来的 CD-R 仍然只能被 Linux 读取，Windows 上只能看到光盘有空间占用，但是点开没有任何文件。
 
 目前仅在一台老 Windows 笔记本的自带光驱上进行了测试，需要更多测试以进一步排除问题。
 
 ## 视频播放
 
 vlc，默认界面很丑，没有啥好用的，捏着鼻子用得了。
+
+## 省电配置
+
+使用`tlp`进行电源管理，不要安装`power-profile-daemon`，两者有冲突。
+
+配置文件的位置在头部的注释里面，放到对应位置即可。
+
+安装`tlpui`进行图形化管理，方便快捷。
